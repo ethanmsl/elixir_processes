@@ -11,6 +11,8 @@ defmodule Processes do
     IO.puts "Hi there, I'm working!"
   end
 
+####################
+
   @doc """
   receive messages and don't shut down
   from `iex` call with:
@@ -42,6 +44,8 @@ defmodule Processes do
     receive_messages()
   end
 
+####################
+
   @doc"""
   send message to pid
   takes boolean-ish whcih is translated to :ok/error
@@ -55,6 +59,25 @@ defmodule Processes do
 
   def send_b(pid, to_send, _is_okay) do
     send pid, {:error, to_send}
+  end
+
+####################
+
+  def counting_messages() do
+    counting_messages(0)
+  end
+
+  def counting_messages(n) do
+    receive do
+      :quit -> 
+        IO.puts "(#{n}): Quitting"
+      {:add, increment} -> 
+        IO.puts "(#{n})~~>(#{n+increment})"
+         counting_messages(n+increment)
+      msg -> 
+        IO.puts "(#{n}): #{msg}" 
+        counting_messages(n+1)
+    end
   end
 
 end
