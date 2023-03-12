@@ -69,8 +69,12 @@ defmodule Processes do
 
   def counting_messages(n) do
     receive do
+      {:exit, reason} ->
+        IO.puts "(#{n}): Exiting with reason: #{reason}"
+        exit(reason)
       :quit -> 
         IO.puts "(#{n}): Quitting"
+        # this will then hit end of program and terminate process/function
       {:add, increment} -> 
         IO.puts "(#{n})~~>(#{n+increment})"
          counting_messages(n+increment)
@@ -79,5 +83,22 @@ defmodule Processes do
         counting_messages(n+1)
     end
   end
+
+
+####################
+
+  # # doesn't work for opaque reasons...
+  # def inner_process(), do: Process.sleep(10_000)
+  # def outer_process(), do: spawn(inner_process()); exit(:bad)
+  #
+  # def run_nests(count, _link=false) do
+  #   IO.puts "running #{count} processes UNlinked"
+  #   Enum.each(1..count, fn _ -> spawn(outer_process()) end)
+  # end
+  #
+  # def run_nests(count, _link=true) do
+  #   IO.puts "running #{count} processes Linked"
+  #   Enum.each(1..count, fn _ -> spawn_link(outer_process()) end)
+  # end
 
 end
